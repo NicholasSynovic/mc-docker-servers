@@ -16,10 +16,10 @@ RUN wget --quiet --show-progress --output-document fabric-installer.jar https://
 
 RUN java -jar fabric-installer.jar server -mcversion $MINECRAFT_VERSION -downloadMinecraft -noprofile
 
-RUN java -jar server.jar
+RUN java -jar fabric-server-launch.jar
 
 RUN rm eula.txt
 
 RUN echo eula=$EULA > eula.txt
 
-RUN java -jar server.jar
+RUN java -jar fabric-server-launch.jar

@@ -1,6 +1,9 @@
+logs/
+config/
+.mixin.out/
+.fabric/
 *.jar
 eula.txt
-logs/
 banned-ips.json
 banned-players.json
 ops.json
