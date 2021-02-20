@@ -5,7 +5,6 @@ ARG mc_version
 ARG ngrok_authtoken
 ARG ngrok_download
 
-ARG eula=true
 ARG port=25565
 ARG timezone=America/Chicago
 ARG xms=1024m
@@ -23,7 +22,7 @@ COPY start.bash /opt/app
 WORKDIR /opt/app
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
-RUN echo eula=${eula}} > eula.txt
+RUN echo eula=true > eula.txt
 
 RUN apt update
 RUN apt upgrade -y
