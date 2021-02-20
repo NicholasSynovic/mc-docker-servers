@@ -9,6 +9,7 @@ ENV XMX = 2048m
 COPY mods/ /opt/app
 COPY fabric-server-launcher.properties /opt/app
 COPY server.properties /opt/app
+COPY start.bash /opt/app
 
 WORKDIR /opt/app
 
