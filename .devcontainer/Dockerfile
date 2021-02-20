@@ -13,5 +13,6 @@ RUN apt update
 RUN apt upgrade -y
 
 RUN apt install git -y
+RUN apt install unzip -y
 RUN apt install wget -y
 RUN apt install openjdk-8-jre -y
