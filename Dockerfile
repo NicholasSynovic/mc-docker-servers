@@ -8,7 +8,7 @@ ENV XMX = 2048m
 
 COPY mods/ /opt/app
 COPY fabric-server-launcher.properties /opt/app
-COPY server.properites /opt/app
+COPY server.properties /opt/app
 
 WORKDIR /opt/app
 
