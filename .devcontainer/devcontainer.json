@@ -1,0 +1,7 @@
+{
+  "name": "Fabric Minecraft Server",
+  "extensions": [
+    "ms-azuretools.vscode-docker"
+  ],
+  "dockerFile": "Dockerfile",
+}
