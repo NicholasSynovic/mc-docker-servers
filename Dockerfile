@@ -3,6 +3,8 @@ FROM ubuntu:latest
 ENV TZ=America/Chicago
 ENV EULA=true
 ENV MINECRAFT_VERSION=1.16.5
+ENV XMS = 1024m
+ENV XMX = 2048m
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -16,10 +18,10 @@ RUN wget --quiet --show-progress --output-document fabric-installer.jar https://
 
 RUN java -jar fabric-installer.jar server -mcversion $MINECRAFT_VERSION -downloadMinecraft -noprofile
 
-RUN java -jar fabric-server-launch.jar
+RUN java -Xms$XMS -Xmx$XMX -jar fabric-server-launch.jar nogui
 
 RUN rm eula.txt
 
 RUN echo eula=$EULA > eula.txt
 
-RUN java -jar fabric-server-launch.jar
+RUN java -Xms$XMS -Xmx$XMX -jar fabric-server-launch.jar nogui
