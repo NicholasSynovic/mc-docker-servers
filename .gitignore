@@ -1,2 +1,9 @@
 *.jar
 eula.txt
+logs/
+banned-ips.json
+banned-players.json
+ops.json
+usercache.json
+whitelist.json
+Minecraft_1.16.5_Multiplayer
