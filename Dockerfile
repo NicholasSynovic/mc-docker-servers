@@ -5,4 +5,4 @@ RUN apt update
 RUN apt upgrade -y
 RUN apt install wget -y
 RUN apt install openjdk-8-jre -y
-RUN wget --quiet --show-progress --output-document fabric.jar https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
+RUN wget --quiet --show-progress --output-document fabric-installer.jar https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
