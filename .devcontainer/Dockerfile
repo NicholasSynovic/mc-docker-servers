@@ -1,13 +1,9 @@
 FROM ubuntu:latest
 
-ENV TZ=America/Chicago
-ENV EULA=true
-ENV MINECRAFT_VERSION=1.16.5
-ENV XMS = 1024m
-ENV XMX = 2048m
+ENV timezone=America/Chicago
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN echo eula=$EULA > eula.txt
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
+RUN echo eula=true > eula.txt
 
 RUN apt update
 RUN apt upgrade -y
