@@ -15,11 +15,11 @@
     - [Docker Image Build Arguements](#docker-image-build-arguements)
       - [NOTE](#note)
     - [Bukkit](#bukkit)
-    - [Fabric](#fabric)
-    - [Forge](#forge)
-    - [Paper](#paper)
-    - [Spigot](#spigot)
-    - [Vanilla](#vanilla)
+      - [Fabric](#fabric)
+      - [Forge](#forge)
+      - [Paper](#paper)
+      - [Spigot](#spigot)
+      - [Vanilla](#vanilla)
 
 ## About
 
@@ -69,7 +69,7 @@ Just because two Docker Images utilize the same arguement name, does not mean th
 
 - TBD
 
-### Fabric
+#### Fabric
 
 - fabric_download
   - The URL to a version of the Fabric modding toolchain.
@@ -98,18 +98,18 @@ Just because two Docker Images utilize the same arguement name, does not mean th
   - **Default:** 2048m
   - **Range:** Any amount of memory that is supported by Docker and your machine greater than the value for *xms*. Suppported size formats can be found [here](https://minecraft.gamepedia.com/Server/Requirements#Server_requirements).
 
-### Forge
+#### Forge
 
 - TBD
 
-### Paper
+#### Paper
 
 - TBD
 
-### Spigot
+#### Spigot
 
 - TBD
 
-### Vanilla
+#### Vanilla
 
 - TBD
