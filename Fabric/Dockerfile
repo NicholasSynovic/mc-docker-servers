@@ -1,47 +1,59 @@
-FROM ubuntu:latest
+# NOTE: Use DOCKER_BUILDKIT=1 environment variable to improve performance and skip erroneous steps
 
-ARG fabric_download
 ARG ngrok_authtoken
 ARG ngrok_download
 
+ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
 ARG mc_version=1.16.5
 ARG port=25565
 ARG timezone=America/Chicago
+ARG tunnel=lan
 ARG xms=1024m
 ARG xmx=2048m
 
-ENV PORT=${port}
-ENV XMS=${xms}
-ENV XMX=${xmx}
-
+FROM ubuntu:latest AS tunnel-lan
+# Update the timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
+# Update software
+RUN apt update
+RUN apt upgrade -y
+RUN apt install wget -y
+RUN apt install openjdk-8-jre -y
+# Copy files into the proper directoy
 COPY mods/ /opt/app
 COPY fabric-server-launcher.properties /opt/app
 COPY server.properties /opt/app
-COPY start-server.bash /opt/app
-
+# CD into the working directory for the server
 WORKDIR /opt/app
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
-RUN echo eula=true > eula.txt
-
-RUN apt update
-RUN apt upgrade -y
-
-RUN apt install unzip -y
-RUN apt install wget -y
-RUN apt install openjdk-8-jre -y
-
-RUN wget --quiet --show-progress -O ngrok.zip ${ngrok_download}
-
+# Download Fabric
 RUN wget --quiet --show-progress --show-progress -O fabric-installer.jar ${fabric_download}
-
-RUN unzip ngrok.zip
-
-RUN ./ngrok authtoken ${ngrok_authtoken}
-
-RUN java -jar fabric-installer.jar server -mcversion ${mc_version} -downloadMinecraft -noprofile
-
+# Install Fabric
+RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -downloadMinecraft -noprofile
+# Sign the EULA
+RUN echo eula=true > eula.txt
+# Assign environment variables
+ENV PORT=${port}
+ENV XMS=${xms}
+ENV XMX=${xmx}
+# Expose tcp/udp ports
 EXPOSE ${PORT}/tcp
 EXPOSE ${PORT}/udp
 
-CMD [ "./start-server.bash" ]
+FROM tunnel-lan as tunnel-ngrok
+# Install dependencies
+RUN apt install unzip -y
+# Download ngrok
+RUN wget --quiet --show-progress -O ngrok.zip ${ngrok_download}
+# Extract ngrok
+RUN unzip ngrok.zip
+# Run ngrok authentication
+RUN ./ngrok authtoken ${ngrok_authtoken}
+# Create start-server.bash
+RUN echo './ngrok tcp $PORT &' >> start-server.bash
+
+FROM tunnel-${tunnel} as final
+# Append jar execution to start-server.bash
+RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
+RUN chmod +x start-server.bash
+# Create the entrypoint for the server
+CMD ["./start-server.bash" ]
