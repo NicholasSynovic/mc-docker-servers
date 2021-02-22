@@ -1,10 +1,9 @@
 {
   "name": "Fabric Minecraft Server",
   "extensions": [
-	"ms-azuretools.vscode-docker",
-	"davidanson.vscode-markdownlint",
-	"yzhang.markdown-all-in-one",
-	"vscjava.vscode-java-pack"
-],
+    "ms-azuretools.vscode-docker",
+    "davidanson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one",
+  ],
   "dockerFile": "Dockerfile",
 }

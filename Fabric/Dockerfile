@@ -27,20 +27,23 @@ RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -do
 FROM tunnel-lan as tunnel-ngrok
 ARG ngrok_authtoken
 ARG ngrok_download=https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+# Add ngrok background launch to the launcher script
 RUN echo './ngrok tcp $PORT &' >> start-server.bash
+# Download and authenticate ngrok
 RUN wget ${ngrok_download} --quiet --show-progress -O ngrok.zip
 RUN apt install unzip -y
 RUN unzip ngrok.zip
 RUN ./ngrok authtoken ${ngrok_authtoken}
 
+# Configures Minecraft settings and starts the server
 FROM tunnel-${tunnel} as final
 ARG allowFlight=false
 ARG allowNether=true
 ARG broadcastConsoleToOPs=true
 ARG broadcastRCONToOPs=true
 ARG difficulty=normal
-ARG enableJMXMonitoring=false
 ARG enableCommandBlock=false
+ARG enableJMXMonitoring=false
 ARG enableQuery=false
 ARG enableRCON=false
 ARG enableStatus=true
@@ -86,9 +89,13 @@ ARG viewDistance=12
 ARG whiteList=false
 ARG xms=1024m
 ARG xmx=2048m
-RUN ./serverProperties.bash
 RUN echo eula=true > eula.txt
+# Configure server settings
+RUN ./serverProperties.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
+# Copy mods into the container
 COPY mods/ /opt/app
+# Create the launcher script
 RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
 RUN chmod +x start-server.bash
+# Run the launcher when the container starts
 CMD ["./start-server.bash" ]
