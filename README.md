@@ -80,7 +80,7 @@ Just because two Docker Images utilize the same arguement name, does not mean th
 - mc_version
   - A version of Minecraft that is compatible with Fabric.
   - **Default:** 1.16.5
-  - **Range:** Any officially supported version of Minecraft that Fabric supports *excluding snapshots*.
+  - **Range:** Any officially supported version of Minecraft that Fabric supports *including snapshots*.
 - port
   - The port that the container will use to host the Minecraft server.
   - **Default:** 25565

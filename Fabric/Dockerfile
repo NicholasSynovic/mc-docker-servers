@@ -1,17 +1,16 @@
 # NOTE: Use DOCKER_BUILDKIT=1 environment variable to improve performance and skip erroneous steps
 
-ARG ngrok_authtoken
-ARG ngrok_download
+# Global arguements
+ARG tunnel=lan
 
+FROM ubuntu:latest AS tunnel-lan
+# Common arguements
 ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
 ARG mc_version=1.16.5
 ARG port=25565
 ARG timezone=America/Chicago
-ARG tunnel=lan
 ARG xms=1024m
 ARG xmx=2048m
-
-FROM ubuntu:latest AS tunnel-lan
 # Update the timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
 # Update software
@@ -26,7 +25,7 @@ COPY server.properties /opt/app
 # CD into the working directory for the server
 WORKDIR /opt/app
 # Download Fabric
-RUN wget --quiet --show-progress --show-progress -O fabric-installer.jar ${fabric_download}
+RUN wget ${fabric_download} --quiet --show-progress -O fabric-installer.jar
 # Install Fabric
 RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -downloadMinecraft -noprofile
 # Sign the EULA
@@ -40,10 +39,13 @@ EXPOSE ${PORT}/tcp
 EXPOSE ${PORT}/udp
 
 FROM tunnel-lan as tunnel-ngrok
+# Local arguements
+ARG ngrok_download
+ARG ngrok_authtoken
 # Install dependencies
 RUN apt install unzip -y
 # Download ngrok
-RUN wget --quiet --show-progress -O ngrok.zip ${ngrok_download}
+RUN wget ${ngrok_download} --quiet --show-progress -O ngrok.zip
 # Extract ngrok
 RUN unzip ngrok.zip
 # Run ngrok authentication
