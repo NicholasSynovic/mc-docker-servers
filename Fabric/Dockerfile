@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/ti
 RUN apt update
 RUN apt upgrade -y
 RUN apt install wget -y
-RUN apt install openjdk-8-jre -y
+RUN apt install openjdk-11-jre -y
 # Copy mods into the proper directoy
 COPY mods/ /opt/app
 # CD into the working directory for the server
@@ -52,13 +52,14 @@ RUN echo './ngrok tcp $PORT &' >> start-server.bash
 
 FROM tunnel-${tunnel} as final
 # baseImage Arguements
+ARG spawnProtection=16
 ARG xms=1024m
 ARG xmx=2048m
 # Delete server.properties file
 RUN rm server.properties
 # Create .properties files
 RUN touch server.properties
-RUN touch fabric-server-launcher.properties
+RUN ./serverProperties.bash
 # Append jar execution to start-server.bash
 RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
 # Make the start file executable
