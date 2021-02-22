@@ -71,16 +71,22 @@ Just because two Docker Images utilize the same arguement name, does not mean th
 
 #### Fabric
 
+Alphabeticized for convience
+
 - fabric_download
   - The URL to a version of the Fabric modding toolchain.
-- ngrok_authtoken
-  - The authentication token for an ngrok user
-- ngrok_download
-  - The URL to a version of ngrok.
+  - **Default:** [https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar](https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar)
+  - **Range:** Any Fabric download link.
 - mc_version
   - A version of Minecraft that is compatible with Fabric.
   - **Default:** 1.16.5
   - **Range:** Any officially supported version of Minecraft that Fabric supports *including snapshots*.
+- ngrok_authtoken
+  - The authentication token for an ngrok user.
+- ngrok_download
+  - The URL to a version of ngrok.
+  - **Default:** [https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip](https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip)
+  - **Range:** Any ngrok version download link.
 - port
   - The port that the container will use to host the Minecraft server.
   - **Default:** 25565
@@ -88,9 +94,13 @@ Just because two Docker Images utilize the same arguement name, does not mean th
 - timezone
   - The timezone of the server. Needed for TZData.
   - **Default:** America/Chicago
-  - **Range:** Any timezone that is supported by TZData
+  - **Range:** Any timezone that is supported by TZData.
+- tunnel
+  - The tunnelling system that is used to port forward the `tcp/udp` port of the server. `lan` means that there is no port-forwarding.
+  - **Default:** lan
+  - **Range:** lan, ngrok
 - xms
-  - The minimum amount of memory to give to the server
+  - The minimum amount of memory to give to the server.
   - **Default:** 1024m
   - **Range:** Any amount of memory that is supported by Docker and your machine greater than 0m. Suppported size formats can be found [here](https://minecraft.gamepedia.com/Server/Requirements#Server_requirements).
 - xmx
