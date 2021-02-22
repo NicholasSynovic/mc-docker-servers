@@ -12,21 +12,17 @@ ARG port=25565
 ARG timezone=America/Chicago
 # Update the timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
-# Update software
+# Install software
 RUN apt update
 RUN apt upgrade -y
 RUN apt install wget -y
 RUN apt install openjdk-11-jre -y
-# Copy mods into the proper directoy
-COPY mods/ /opt/app
 # CD into the working directory for the server
 WORKDIR /opt/app
 # Download Fabric
 RUN wget ${fabric_download} --quiet --show-progress -O fabric-installer.jar
 # Install Fabric
 RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -downloadMinecraft -noprofile
-# Sign the EULA
-RUN echo eula=true > eula.txt
 # Global environment variables
 ENV PORT=${port}
 # Expose tcp/udp ports
@@ -106,9 +102,13 @@ ARG xms=1024m
 ARG xmx=2048m
 # Delete server.properties file
 RUN rm server.properties
-# Create .properties files
+# Create server.properties file
 RUN touch server.properties
 RUN ./serverProperties.bash
+# Copy mods into the proper directoy
+COPY mods/ /opt/app
+# Sign the EULA
+RUN echo eula=true > eula.txt
 # Append jar execution to start-server.bash
 RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
 # Make the start file executable
