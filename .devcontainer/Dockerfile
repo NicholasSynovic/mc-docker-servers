@@ -3,7 +3,6 @@ FROM ubuntu:latest
 ENV timezone=America/Chicago
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
-RUN echo eula=true > eula.txt
 
 RUN apt update
 RUN apt upgrade -y
