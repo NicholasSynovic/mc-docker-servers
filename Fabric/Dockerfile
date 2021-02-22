@@ -54,8 +54,8 @@ FROM tunnel-${tunnel} as final
 # baseImage Arguements
 ARG xms=1024m
 ARG xmx=2048m
-# Delete .properties files
-RUN rm *.properties
+# Delete server.properties file
+RUN rm server.properties
 # Create .properties files
 RUN touch server.properties
 RUN touch fabric-server-launcher.properties
