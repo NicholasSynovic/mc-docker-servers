@@ -1,4 +1,3 @@
-rm server.properties
 touch server.properties
 echo allowFlight=$1 >> server.properties
 echo allowNether=$2 >> server.properties

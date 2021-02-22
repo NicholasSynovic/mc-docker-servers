@@ -52,11 +52,11 @@ ARG entityBroadcastRangePercentage=100
 ARG forceGamemode=false
 ARG functionPermissionLevel=2
 ARG gamemode=survival
-ARG generatorSettings
+ARG generatorSettings=""
 ARG generateStructures=true
 ARG hardcore=false
 ARG levelName=World
-ARG levelSeed
+ARG levelSeed=""
 ARG levelType=default
 ARG maxBuildHeight=256
 ARG maxPlayers=20
@@ -71,11 +71,11 @@ ARG preventProxyConnections=false
 ARG pvp=true
 ARG queryPort=25565
 ARG rateLimit=0
-ARG rconPassword
+ARG rconPassword=""
 ARG rconPort=25575
-ARG resourcePack
-ARG resourcePackSHA1
-ARG serverIP
+ARG resourcePack=""
+ARG resourcePackSHA1=""
+ARG serverIP=""
 ARG serverPort=25565
 ARG snooperEnabled=true
 ARG spawnAnimals=true
@@ -91,7 +91,8 @@ ARG xms=1024m
 ARG xmx=2048m
 RUN echo eula=true > eula.txt
 # Configure server settings
-RUN ./serverProperties.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
+COPY create_MCSP_file.bash /opt/app
+RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
 # Copy mods into the container
 COPY mods/ /opt/app
 # Create the launcher script
