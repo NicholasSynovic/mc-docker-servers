@@ -3,7 +3,7 @@
 ARG tunnel=lan
 
 # Sets up the base build stage which actually configures the server
-FROM openjdk:11-buster AS base
+FROM openjdk:11-buster AS tunnel-lan
 
 # Change Working Directories
 WORKDIR /opt/app
@@ -95,7 +95,6 @@ ARG whiteList=false
 RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransPORT} ${viewDistance} ${whiteList}
 
 # Create the launcher script
-FROM base as tunnel-lan
 RUN echo '#!/bin/bash' >> start-server.bash
 
 # ngrok tunnel software implementation
@@ -108,7 +107,7 @@ RUN echo "./ngrok tcp ${PORT} &" >> start-server.bash
 RUN ./ngrok authtoken ${ngrok_authtoken}
 
 # Final build stage of the Dockerfile
-FROM tunnel-${tunnel}} AS final
+FROM tunnel-${tunnel} AS final
 # Append data to the launcher script
 ARG xms=1G
 ARG xmx=1G
