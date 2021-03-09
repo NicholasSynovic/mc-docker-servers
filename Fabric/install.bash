@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DOCKER_BUILDKIT=1
+
 echo "Building Docker Container"
 docker build -t minecraft_server .
 
