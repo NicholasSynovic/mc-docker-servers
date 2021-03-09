@@ -6,9 +6,8 @@ WORKDIR /opt/app
 
 # Expose Minecraft Port
 ARG port=25565
-ENV PORT=${port}
-EXPOSE ${PORT}/tcp
-EXPOSE ${PORT}/udp
+EXPOSE ${port}/tcp
+EXPOSE ${port}/udp
 
 # Update the timezone
 ARG timezone=America/Chicago
