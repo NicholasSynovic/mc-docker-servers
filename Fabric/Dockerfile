@@ -1,5 +1,5 @@
 # Sets up the base container from which everything inherits from
-FROM openjdk:11-jre-buster
+FROM openjdk:11-buster
 
 # Change Working Directories
 WORKDIR /opt/app
@@ -90,10 +90,11 @@ ARG whiteList=false
 RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
 
 # Create the launcher script
-ARG xms=1024m
-ARG xmx=2048m
-RUN echo 'java -Xms${xms} -Xmx${xmx} -jar fabric-server-launch.jar nogui' >> start-server.bash
+ARG xms=1G
+ARG xmx=1G
+RUN echo '#!/bin/bash' >> start-server.bash
+RUN echo "java -Xms${xms} -Xmx${xmx} -jar fabric-server-launch.jar nogui" >> start-server.bash
 RUN chmod +x start-server.bash
 
 # Run the launcher when the container starts
-CMD ["./start-server.bash" ]
+CMD [ "./start-server.bash" ]
