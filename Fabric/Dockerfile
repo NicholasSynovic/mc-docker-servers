@@ -1,13 +1,18 @@
-# Sets up the base container from which everything inherits from
-FROM openjdk:11-buster
+# TCP tunneling software to use
+
+ARG tunnel=lan
+
+# Sets up the base build stage which actually configures the server
+FROM openjdk:11-buster AS base
 
 # Change Working Directories
 WORKDIR /opt/app
 
 # Expose Minecraft Port
 ARG port=25565
-EXPOSE ${port}/tcp
-EXPOSE ${port}/udp
+ENV PORT=${port}
+EXPOSE ${PORT}/tcp
+EXPOSE ${PORT}/udp
 
 # Update the timezone
 ARG timezone=America/Chicago
@@ -67,14 +72,14 @@ ARG OPPermissionLevel=4
 ARG playerIdleTimeout=0
 ARG preventProxyConnections=false
 ARG pvp=true
-ARG queryPort=${port}
+ARG queryPort=${PORT}
 ARG rateLimit=0
 ARG rconPassword=""
 ARG rconPort=25575
 ARG resourcePack=""
 ARG resourcePackSHA1=""
 ARG serverIP=""
-ARG serverPort=${port}
+ARG serverPort=${PORT}
 ARG snooperEnabled=true
 ARG spawnAnimals=true
 ARG spawnMonsters=true
@@ -87,12 +92,26 @@ ARG viewDistance=12
 ARG whiteList=false
 
 # Configure server.properties
-RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
+RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransPORT} ${viewDistance} ${whiteList}
 
 # Create the launcher script
+FROM base as tunnel-lan
+RUN echo '#!/bin/bash' >> start-server.bash
+
+# ngrok tunnel software implementation
+FROM tunnel-lan as tunnel-ngrok
+ARG ngrok_download=https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+ARG ngrok_authtoken
+RUN wget ${ngrok_download} --quiet --show-progress -O ngrok.zip
+RUN unzip ngrok.zip
+RUN echo "./ngrok tcp ${PORT} &" >> start-server.bash
+RUN ./ngrok authtoken ${ngrok_authtoken}
+
+# Final build stage of the Dockerfile
+FROM tunnel-${tunnel}} AS final
+# Append data to the launcher script
 ARG xms=1G
 ARG xmx=1G
-RUN echo '#!/bin/bash' >> start-server.bash
 RUN echo "java -Xms${xms} -Xmx${xmx} -jar fabric-server-launch.jar nogui" >> start-server.bash
 RUN chmod +x start-server.bash
 
