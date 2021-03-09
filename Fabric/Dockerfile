@@ -4,20 +4,26 @@
 ARG tunnel=lan
 
 # Sets up the base container from which everything inherits from
-FROM ubuntu:latest AS tunnel-lan
+FROM openjdk:11-jre-buster AS tunnel-lan
+
 ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
 ARG mc_version=1.16.5
 ARG port=25565
+
 # Update the timezone
 ARG timezone=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
+
 ENV PORT=${port}
 EXPOSE ${PORT}/tcp
 EXPOSE ${PORT}/udp
+
 WORKDIR /opt/app
+
 RUN apt update
 RUN apt upgrade -y
 RUN apt install wget -y
+
 # Download and run Fabric
 RUN wget ${fabric_download} --quiet --show-progress -O fabric-installer.jar
 RUN apt install openjdk-11-jre -y
@@ -27,8 +33,10 @@ RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -do
 FROM tunnel-lan as tunnel-ngrok
 ARG ngrok_authtoken
 ARG ngrok_download=https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+
 # Add ngrok background launch to the launcher script
 RUN echo './ngrok tcp $PORT &' >> start-server.bash
+
 # Download and authenticate ngrok
 RUN wget ${ngrok_download} --quiet --show-progress -O ngrok.zip
 RUN apt install unzip -y
@@ -89,14 +97,19 @@ ARG viewDistance=12
 ARG whiteList=false
 ARG xms=1024m
 ARG xmx=2048m
+
 RUN echo eula=true > eula.txt
+
 # Configure server settings
 COPY create_MCSP_file.bash /opt/app
 RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
+
 # Copy mods into the container
 COPY mods/ /opt/app
+
 # Create the launcher script
 RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
 RUN chmod +x start-server.bash
+
 # Run the launcher when the container starts
 CMD ["./start-server.bash" ]
