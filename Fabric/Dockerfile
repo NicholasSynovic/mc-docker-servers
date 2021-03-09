@@ -67,14 +67,14 @@ ARG OPPermissionLevel=4
 ARG playerIdleTimeout=0
 ARG preventProxyConnections=false
 ARG pvp=true
-ARG queryPort=25565
+ARG queryPort=${port}
 ARG rateLimit=0
 ARG rconPassword=""
 ARG rconPort=25575
 ARG resourcePack=""
 ARG resourcePackSHA1=""
 ARG serverIP=""
-ARG serverPort=25565
+ARG serverPort=${port}
 ARG snooperEnabled=true
 ARG spawnAnimals=true
 ARG spawnMonsters=true
@@ -85,14 +85,14 @@ ARG textFilteringConfig
 ARG useNativeTransport=true
 ARG viewDistance=12
 ARG whiteList=false
-ARG xms=1024m
-ARG xmx=2048m
 
 # Configure server.properties
 RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
 
 # Create the launcher script
-RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
+ARG xms=1024m
+ARG xmx=2048m
+RUN echo 'java -Xms${xms} -Xmx${xmx} -jar fabric-server-launch.jar nogui' >> start-server.bash
 RUN chmod +x start-server.bash
 
 # Run the launcher when the container starts
