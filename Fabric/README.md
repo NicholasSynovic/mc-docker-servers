@@ -6,6 +6,7 @@
   - [Table of Contents](#table-of-contents)
   - [About](#about)
   - [Docker Container Arguements](#docker-container-arguements)
+  - [ngrok Arguements](#ngrok-arguements)
   - [Fabric Server Arguements](#fabric-server-arguements)
   - [Minecraft Server Arguements](#minecraft-server-arguements)
   - [Java Arguements](#java-arguements)
@@ -26,6 +27,19 @@ These arguements directly affect how the Docker container is created. These do n
 - `timezone`
   - Description: The timezone of the server set by `TZData`.
   - Default: America/Chicago
+- `tunnel`
+  - Description: The TCP tunneling solution to be used to port forward the Minecraft servers IP address.
+  - Default: lan
+  - Options: lan, ngrok
+
+## ngrok Arguements
+
+- `ngrok_download`
+  - Description: The download URL of whatever version of ngrok you want to use
+  - Default: [https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip](https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip)
+- `ngrok_authtoken`
+  - Description: Your ngrok authtoken needed to access ngrok's services
+  - Default: left blank
 
 ## Fabric Server Arguements
 
