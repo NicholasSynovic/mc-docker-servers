@@ -1,50 +1,41 @@
-# NOTE: Use DOCKER_BUILDKIT=1 environment variable to improve performance and skip erroneous steps
-
-# Used for conditional build stages
-ARG tunnel=lan
-
 # Sets up the base container from which everything inherits from
-FROM openjdk:11-jre-buster AS tunnel-lan
+FROM openjdk:11-jre-buster
 
-ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
-ARG mc_version=1.16.5
+# Change Working Directories
+WORKDIR /opt/app
+
+# Expose Minecraft Port
 ARG port=25565
+ENV PORT=${port}
+EXPOSE ${PORT}/tcp
+EXPOSE ${PORT}/udp
 
 # Update the timezone
 ARG timezone=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo ${timezone} > /etc/timezone
 
-ENV PORT=${port}
-EXPOSE ${PORT}/tcp
-EXPOSE ${PORT}/udp
-
-WORKDIR /opt/app
-
+# Update and Upgrade Software
 RUN apt update
 RUN apt upgrade -y
-RUN apt install wget -y
 
-# Download and run Fabric
+# Copy files
+COPY create_MCSP_file.bash .
+COPY mods/ .
+
+# Download Fabric Server
+ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
 RUN wget ${fabric_download} --quiet --show-progress -O fabric-installer.jar
-RUN apt install openjdk-11-jre -y
+
+# Execute Fabric Server
+ARG mc_version=1.16.5
 RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -downloadMinecraft -noprofile
 
-# Configures ngrok port-forwarding
-FROM tunnel-lan as tunnel-ngrok
-ARG ngrok_authtoken
-ARG ngrok_download=https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+# Configure Minecraft Server
 
-# Add ngrok background launch to the launcher script
-RUN echo './ngrok tcp $PORT &' >> start-server.bash
+# Accept EULA
+RUN echo eula=true > eula.txt
 
-# Download and authenticate ngrok
-RUN wget ${ngrok_download} --quiet --show-progress -O ngrok.zip
-RUN apt install unzip -y
-RUN unzip ngrok.zip
-RUN ./ngrok authtoken ${ngrok_authtoken}
-
-# Configures Minecraft settings and starts the server
-FROM tunnel-${tunnel} as final
+# server.properties file options
 ARG allowFlight=false
 ARG allowNether=true
 ARG broadcastConsoleToOPs=true
@@ -98,14 +89,8 @@ ARG whiteList=false
 ARG xms=1024m
 ARG xmx=2048m
 
-RUN echo eula=true > eula.txt
-
-# Configure server settings
-COPY create_MCSP_file.bash /opt/app
+# Configure server.properties
 RUN ./create_MCSP_file.bash ${allowFlight} ${allowNether} ${broadcastConsoleToOPs} ${broadcastRCONToOPs} ${difficulty} ${enableCommandBlock} ${enableJMXMonitoring} ${enableQuery} ${enableRCON} ${enableStatus} ${enforceWhitelist} ${entityBroadcastRangePercentage} ${forceGamemode} ${functionPermissionLevel} ${gamemode} ${generatorSettings} ${generateStructures} ${hardcore} ${levelName} ${levelSeed} ${levelType} ${maxBuildHeight} ${maxPlayers} ${maxTickTime} ${maxWorldSize} ${motd} ${networkCompressionThreshold} ${onlineMode} ${OPPermissionLevel} ${playerIdleTimeout} ${preventProxyConnections} ${pvp} ${queryPort} ${rateLimit} ${rconPassword} ${rconPort} ${resourcePack} ${resourcePackSHA1} ${serverIP} ${serverPort} ${snooperEnabled} ${spawnAnimals} ${spawnMonsters} ${spawnNPCs} ${spawnProtection} ${syncChunkWrites} ${textFilteringConfig} ${useNativeTransport} ${viewDistance} ${whiteList}
-
-# Copy mods into the container
-COPY mods/ /opt/app
 
 # Create the launcher script
 RUN echo 'java -Xms${XMS} -Xmx${XMX} -jar fabric-server-launch.jar nogui' >> start-server.bash
