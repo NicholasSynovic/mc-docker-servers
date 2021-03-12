@@ -25,13 +25,12 @@ RUN apt upgrade -y
 COPY create_MCSP_file.bash .
 COPY mods/ .
 
-# Download Fabric Server
-ARG fabric_download=https://maven.fabricmc.net/net/fabricmc/fabric-installer/0.6.1.51/fabric-installer-0.6.1.51.jar
-RUN wget ${fabric_download} --quiet --show-progress -O fabric-installer.jar
+# Download the Vanilla Server
+ARG vanilla_download=https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+RUN wget ${vanilla_download} --quiet --show-progress -O server.jar
 
-# Execute Fabric Server
-ARG mc_version=1.16.5
-RUN java -jar fabric-installer.jar server -snapshot -mcversion ${mc_version} -downloadMinecraft -noprofile
+# Execute Vanilla Server
+RUN java -jar server.jar
 
 # Configure Minecraft Server
 
@@ -110,7 +109,7 @@ FROM tunnel-${tunnel} AS final
 # Append data to the launcher script
 ARG xms=1G
 ARG xmx=1G
-RUN echo "java -Xms${xms} -Xmx${xmx} -jar fabric-server-launch.jar nogui" >> start-server.bash
+RUN echo "java -Xms${xms} -Xmx${xmx} -jar server.jar nogui" >> start-server.bash
 RUN chmod +x start-server.bash
 
 # Run the launcher when the container starts
