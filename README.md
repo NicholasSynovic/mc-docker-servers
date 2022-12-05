@@ -2,7 +2,7 @@
 
 > Dockerfiles that spin up Minecraft Servers
 
-![Docker](https://img.shields.io/badge/-Docker-blue) ![Minecraft](https://img.shields.io/badge/Minecraft-Fabric-green)
+![Docker](https://img.shields.io/badge/-Docker-blue) ![Minecraft](https://img.shields.io/badge/Minecraft-Fabric%2C%20Vanilla-green)
 
 ## Table of Contents
 
